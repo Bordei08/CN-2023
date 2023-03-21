@@ -19,9 +19,7 @@ def descompunerea_Choleski(A):
             s = sum(D[k] * L[i][k] * L[p][k] for k in range(p))
             L[i][p] = (A[i][p] - s) / D[p]
 
-    Lt = np.transpose(L)
-
-    return L, D, Lt
+    return L, D
 
 
 def generate_matrix(n):
@@ -36,13 +34,13 @@ def generate_matrix(n):
     return A
 
 
-def detA(L, D, Lt):
+def detA(L, D):
     det_L = np.linalg.det(L)
 
     det_D = 1
     for i in D:
         det_D *= i
-    det_Lt = np.linalg.det(Lt)
+    det_Lt = np.linalg.det(np.transpose(L))
 
     return det_L * det_D * det_Lt
 
@@ -86,14 +84,14 @@ def Ltx_y(Lt, y):
     return x
 
 
-def find_x(L, D, Lt, b):
+def find_x(L, D, b):
     z = Lz_b(L, b)
     print("z = " + z.__str__())
 
     y = Dy_z(D, z)
     print("y = " + y.__str__())
 
-    x = Ltx_y(Lt, y)
+    x = Ltx_y(np.transpose(L), y)
     print("x = " + x.__str__())
 
     return x
@@ -105,9 +103,9 @@ def descompunere_LU(A):
     return L, U
 
 
-def bonus(L, D, Lt, Ainit):
+def bonus(L, D, Ainit):
     LD = np.dot(L, np.diagflat(D))
-    LDLt = np.dot(LD, Lt)
+    LDLt = np.dot(LD,np.transpose(L))
 
     rezultat = np.subtract(LDLt, Ainit)
     det_rezultat = np.linalg.det(rezultat)
@@ -131,8 +129,7 @@ print(D)
 
 print("*********************************")
 print("Lt :")
-Lt = descompunerea_Choleski(matrix)[2]
-print(Lt)
+print(np.transpose(L))
 
 print("*********************************")
 print("Verify difference:")
@@ -143,7 +140,7 @@ print(LDLt - matrix)
 
 print("*********************************")
 print("Det A:")
-print(detA(L, D, Lt))
+print(detA(L, D))
 
 print("*********************************")
 print("b :")
@@ -152,7 +149,7 @@ print(b)
 
 print("*********************************")
 print("Find x :")
-x = find_x(L, D, Lt, b)
+x = find_x(L, D, b)
 
 print("Verify: ")
 
@@ -190,7 +187,7 @@ print("*********************************")
 print("BONUS")
 
 eps = pow(10, -5)
-corectitudinea_descompunerii = bonus(L, D, Lt, matrix)
+corectitudinea_descompunerii = bonus(L, D, matrix)
 print(corectitudinea_descompunerii)
 if corectitudinea_descompunerii < eps:
     print("Corectitudinea e ok")
