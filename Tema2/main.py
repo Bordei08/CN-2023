@@ -135,7 +135,7 @@ print("*********************************")
 print("Verify difference:")
 
 LD = np.dot(L, np.diagflat(D))
-LDLt = np.dot(LD, Lt)
+LDLt = np.dot(LD, np.transpose(L))
 print(LDLt - matrix)
 
 print("*********************************")
