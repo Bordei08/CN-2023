@@ -17,7 +17,11 @@ def descompunerea_Choleski(A):
 
         for i in range(p, n):
             s = sum(D[k] * L[i][k] * L[p][k] for k in range(p))
-            L[i][p] = (A[i][p] - s) / D[p]
+            if abs(D[p]) < pow(10, -7):
+                L[i][p] = (A[i][p] - s) / D[p]
+            else:
+                print("Nu se poate calcula solutia")
+                break
 
     return L, D
 
@@ -105,7 +109,7 @@ def descompunere_LU(A):
 
 def bonus(L, D, Ainit):
     LD = np.dot(L, np.diagflat(D))
-    LDLt = np.dot(LD,np.transpose(L))
+    LDLt = np.dot(LD, np.transpose(L))
 
     rezultat = np.subtract(LDLt, Ainit)
     det_rezultat = np.linalg.det(rezultat)
