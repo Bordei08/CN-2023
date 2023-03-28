@@ -40,7 +40,7 @@ def des_householder(a,b):
 
 # k = sqrt(sigma)
         k = np.sqrt(sigma)
-        if A[r][r] >= e:
+        if A[r][r] > 0:
             k = -k
 
 # Calculez beta       
