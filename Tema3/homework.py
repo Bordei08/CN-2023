@@ -55,8 +55,6 @@ def des_householder(a,b):
                 u[i] = A[i][r]
             else:
                 u[i] = 0  
-                     
-
 # A = P_r * A
 # transformarea coloanelor j = r + 1, ..., n
         for j in range(r + 1, n):
@@ -74,7 +72,6 @@ def des_householder(a,b):
         for i in range(r + 1, n):
             A[i][r] = 0
 # b = P_r * b
-
 # recalculam y
         y = 0
         for i in range(r, n):
@@ -149,7 +146,9 @@ def solve_system_library(a,b):
 
 def create_final_result(a, s):
     b = calc_b(a, s)
-    
+    prag = 10 ** -6
+    flag = False
+
     final_result = ""
     final_result = "Instantele generate random sunt :  \n" + "A este : " + str(a) + "\n"+ "s este : " + str(s) + "\n" + "b este : " + str (b) + "\n"
 #Ex3 -------------------------------------------------
@@ -157,25 +156,30 @@ def create_final_result(a, s):
     x_result_householder = np.array(solve_system_no_library(a,b))
     
     x_result_library = solve_system_library(a,b)
-    
+
     final_result = final_result + "Solutia  sistemului cu Householder : " + str(x_result_householder)+ "\n" + "Solutia sistemului cu bibloteca : " + str(x_result_library) + "\n" 
     
     err_x = linalg.norm(x_result_library - x_result_householder)
-    
-    final_result = final_result + "|| X_QR - X_householder||_2 = " + str(err_x) + "\n"
+    flag = err_x < prag
+
+    final_result = final_result + "|| X_QR - X_householder||_2 = " + str(err_x) +  " < 10^-6  " + str(flag)+"\n"
 
 #Ex4---------------------------------------------------
     err_1 = linalg.norm(np.dot(a,x_result_householder) - b)
-    final_result = final_result + "||a*X_householder - b ||_2 = " + str(err_1) + "\n"
+    flag = err_1 < prag
+    final_result = final_result + "||a*X_householder - b ||_2 = " + str(err_1) +  " < 10^-6  " + str(flag)+ "\n"
 
     err_2 = linalg.norm(np.dot(a,x_result_library) - b)
-    final_result = final_result + "||a*x_QR - b||_2 = " + str(err_2) + "\n"
+    flag = err_2 < prag
+    final_result = final_result + "||a*x_QR - b||_2 = " + str(err_2) + " < 10^-6 "+ str(flag)  +"\n" 
 
     err_3 = linalg.norm(x_result_householder - s)/ linalg.norm(s)
-    final_result = final_result + "||(X_householder - S)||_2 /  ||S||_2 = " + str(err_3) + "\n"
+    flag = err_3 < prag
+    final_result = final_result + "||(X_householder - S)||_2 /  ||S||_2 = " + str(err_3) + " < 10^-6 "+ str(flag) + "\n"
 
     err_4 = linalg.norm(x_result_library - s) / linalg.norm(s)
-    final_result = final_result + "||X_OR - S||_2 / ||S||_2" + str(err_4) + "\n"
+    flag = err_4 < prag
+    final_result = final_result + "||X_OR - S||_2 / ||S||_2" + str(err_4)+ " < 10^-6 "+ str(flag) + "\n"
 
 #Ex5--------------------------------------------------
     
@@ -184,7 +188,8 @@ def create_final_result(a, s):
     a_inv_library = linalg.inv(a)
 
     err_inv = linalg.norm(a_inv_householder- a_inv_library)
-    final_result = final_result + "||A^-1_householder - A^-1_bibl||_2 = " + str(err_inv) + "\n"
+    flag = err_inv < prag
+    final_result = final_result + "||A^-1_householder - A^-1_bibl||_2 = " + str(err_inv) + " < 10^-6 "+ str(flag)+ "\n"
 
    
     return final_result
