@@ -154,7 +154,7 @@ def create_final_result(a, s):
 #Ex3 -------------------------------------------------
     
     x_result_householder = np.array(solve_system_no_library(a,b))
-    
+   # print(b - np.dot(a,x_result_householder))
     x_result_library = solve_system_library(a,b)
 
     final_result = final_result + "Solutia  sistemului cu Householder : " + str(x_result_householder)+ "\n" + "Solutia sistemului cu bibloteca : " + str(x_result_library) + "\n" 
