@@ -2,6 +2,7 @@ import numpy as np
 
 
 e = 10 ** -9
+big_number = 100000000000000000
 
 # Aceste functie este folosita doar pentru a.txt, b.txt, aplusb.txt, ai.txt i = {1, 2, 3, 4, 5}.
 def read_matrix(file_name):   
@@ -58,49 +59,56 @@ def get_matrix_check(n,a):
     return True
 
 
+def formula3(n,a,b,x_gs1):
+    x_gs2 = np.zeros(n)
+    x_gs2 = np.array(x_gs2)
+    x_gs2 = x_gs1.copy()
+    for i in range(n):
+        s = 0
+        for x in a[i]:
+            if x[1] == i:
+                val = x[0]
+            else:
+                index = x[1]
+                s = s + x[0] * x_gs2[index]
+        x_gs2[i] = (b[i] - s)/val
+    
+    return x_gs2        
+
+
 def gaus_seidel(n , a, b):
 
-    x_gs = np.zeros(n)
-    x_gs = np.array(x_gs)
+    x_gs1 = np.zeros(n)
+    x_gs1 = np.array(x_gs1)
+    x_gs2 = np.zeros(n)
+    x_gs2 = np.array(x_gs2)
     d_x = 1
     k = 0
 
     while d_x >= e and k < 10000:
-        d_x = 0
-        for i in range(n):
-            s = 0
-            for x in a[i]:
-                if x[1] == i:
-                    val = x[0]
-                else:
-                    index = x[1]
-                    s = s + x[0] * x_gs[index]
-
-            
-            if abs(val) > 1e-10:
-                d_x = d_x + ((b[i] - s) / val - x_gs[i])**2
-            else:
-                d_x = d_x + ((b[i] - s) - x_gs[i]*val)**2;
-            x_gs[i] = (b[i] - s)/val
-
-        d_x = np.sqrt(d_x)    
-        k = k + 1
-    
-    if abs(d_x) <= e:
-        return x_gs
-    return "Error: Divergenta"    
+       ## d_x = 0
+        x_gs1 = x_gs2.copy()
+        x_gs2 = formula3(n,a,b,x_gs1).copy()
+        d_x = np.linalg.norm(x_gs2 - x_gs1)
+        
+        if d_x < e:
+            return x_gs2
+        if d_x > big_number:
+            return -1 
+        k = k + 1      
 
 def get_solution_check(a,x,b):
+    
     result = [0 for i in range(len(b))]
-
-    for i in range(len(a)):
+    n = len(b)
+    for i in range(n):
         val = 0
         for y in a[i]:
             val = val + y[0] * x[y[1]]
         result[i] = val - b[i]
 
     err = 0
-    for i in range(len(a)):
+    for i in range(n):
         aux = abs(result[i])
         if aux > err:
             err = aux
@@ -156,14 +164,15 @@ def use_case_5():
     n, a = read_matrix("a5.txt")
     m, b = read_b("b5.txt")
     if get_matrix_check(n,a):
-        try:
-            x = gaus_seidel(n, a, b)
-            err = get_solution_check(a,x,b)
-        except:
-            err = None    
+        x = gaus_seidel(n, a, b)
+        if x == -1:
+            err = "divergenta"
+        else:    
+            err = get_solution_check(a,x,b)  
+
         return get_matrix_check(n,a),err
     else:
-        return  get_matrix_check(n,a),None    
+        return get_matrix_check(n,a),None    
 
 
 
@@ -183,31 +192,18 @@ print(get_solution_check(a,x_s,b))
 #print(get_equality(n,a,b))
 ##print(read_b("b1.txt"))
 '''
+
+
+print(use_case_5())
 #BONUS
 #----------------------------------------------------------------
-def check_result(a, b):
-    n = len(a)
-    m = len(b)
-    for i in range(n):
-        for x in a[i]:
-            val1, col1 = x
-            next_x = None
-            for y in b[i]:
-                if y[1] == col1:
-                    next_x = y[0]
-                    break
-            if not next_x:
-                return False
-            val = next_x[0]
-            if abs(val1- val2) >= e:
-                return False
-
-    return True     
+   
 
 
 def check_result_sum(m1, m2):
     n = len(m1)
     m= len(m2)
+    ## Verficam corespondenta dintre elmentele din m1 in m2
     for i in range(n):
         for x in m1[i]:
             val1, col1 = x
@@ -225,14 +221,14 @@ def solve_bonus():
     m, b  = read_matrix("b.txt")
     o, a_plus_b = read_matrix("aplusb.txt")
     sum = [[] for i in range(n)]
-
+## Cautam corespondent pentru elementul din matricea A in matricea B
     for i in range(n):
         for x in a[i]:
             val_a, col_a = x
             val_b = next((y[0] for y in b[i] if y[1] == col_a), 0)
             if abs(val_a + val_b) > e:
                 sum[i].append((val_a + val_b, col_a))
-
+## Cautam corespondent pentru elementul din matricea B in matricea A
     for i in range(m):
         for y in b[i]:
             val_b, col_b = y
