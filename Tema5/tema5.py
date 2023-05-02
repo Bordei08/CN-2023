@@ -50,12 +50,12 @@ def generateMatrix(n):
     randCount = random.randint(n, n * 10)
     a = [[] for i in range(0, n)]
     for i in range(0, randCount):
-        value = random.random() * 10
+        value = random.random() * 10 + 1
         line = random.randint(0, n - 1)
         column = random.randint(0, n - 1)
-        if len(a[line]) == 0:
-            a[line].append((value, column))
-            a[column].append((value, line))
+
+        a[line].append((value, column))
+        a[column].append((value, line))
 
     return a
 
@@ -125,6 +125,7 @@ def powerMethod(a):
         normToCheck = euclidNorm(
             [(w[i] - lbd * v[i]) for i in range(n)]
         )
+        print(normToCheck)
 
     if normToCheck > n * eps:
         raise ArithmeticError()
@@ -161,13 +162,13 @@ a, dim = read_matrix("res/m_rar_sim_2023_2023.txt")
 #     print("matricea  nu e simetrica")
 # print(dim)
 #
-# a = generateMatrix(512)
-# if checkSym(a):
-#     l, v = powerMethod(a)
-#     print("Matricea e simetrica")
-#     print(l, v)
-# else:
-#     print("matricea  nu e simetrica")
+a = generateMatrix(300)
+if checkSym(a):
+    l, v = powerMethod(a)
+    print("Matricea e simetrica")
+    print(l, v)
+else:
+    print("matricea  nu e simetrica")
 
 # 3rd point
 
