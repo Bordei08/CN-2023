@@ -5,7 +5,7 @@ eps = 10 ** -9
 kmax = 100000
 
 
-def read_matrix(fileName):
+def readMatrix(fileName):
     file = open(fileName, "r")
     dim = int(file.readline())
 
@@ -41,7 +41,7 @@ def read_matrix(fileName):
 
 # 1st point
 
-a, dim = read_matrix("res/m_rar_sim_2023_512.txt")
+a, dim = readMatrix("res/m_rar_sim_2023_512.txt")
 
 
 # print(a)
@@ -142,7 +142,7 @@ def powerMethod(a):
 
 ##################################################
 
-a, dim = read_matrix("res/m_rar_sim_2023_512.txt")
+a, dim = readMatrix("res/m_rar_sim_2023_512.txt")
 
 if checkSym(a):
     l, v = powerMethod(a)
@@ -151,7 +151,7 @@ if checkSym(a):
 else:
     print("Matricea  nu e simetrica")
 
-a, dim = read_matrix("res/m_rar_sim_2023_1024.txt")
+a, dim = readMatrix("res/m_rar_sim_2023_1024.txt")
 
 if checkSym(a):
     l, v = powerMethod(a)
@@ -160,7 +160,7 @@ if checkSym(a):
 else:
     print("matricea  nu e simetrica")
 
-a, dim = read_matrix("res/m_rar_sim_2023_2023.txt")
+a, dim = readMatrix("res/m_rar_sim_2023_2023.txt")
 
 # if checkSym(a):
 #     l, v = powerMethod(a)
