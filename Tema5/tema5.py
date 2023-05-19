@@ -7,9 +7,9 @@ kmax = 100000
 
 def read_matrix(fileName):
     file = open(fileName, "r")
-    dimension = int(file.readline())
+    dim = int(file.readline())
 
-    matrix = [[] for row in range(dimension)]
+    matrix = [[] for row in range(dim)]
     while True:
         line = file.readline()
 
@@ -36,7 +36,7 @@ def read_matrix(fileName):
             matrix[row].append((value, col))
 
     file.close()
-    return matrix, dimension
+    return matrix, dim
 
 
 # 1st point
@@ -88,20 +88,20 @@ def matrixMultiplyVector(a, v):
     res = [0 for i in range(n)]
 
     for i in range(n):
-        s = 0
+        sum = 0
         for elem in a[i]:
             col = elem[1]
-            s += elem[0] * v[col]
-        res[i] = s
+            sum += elem[0] * v[col]
+        res[i] = sum
 
     return res
 
 
 def scalarMultiply(x, y):
-    s = 0
     for i in range(len(x)):
-        s += x[i] * y[i]
-    return s
+        sum = 0
+        sum += x[i] * y[i]
+    return sum
 
 
 def euclidNorm(v):
@@ -112,8 +112,8 @@ def powerMethod(a):
     n = len(a)
     x = np.random.randint(low=1, high=5, size=n)
 
-    fractie = 1 / np.linalg.norm(x)
-    v = [fractie * x[i] for i in range(n)]
+    frac = 1 / np.linalg.norm(x)
+    v = [frac * x[i] for i in range(n)]
 
     w = matrixMultiplyVector(a, v)
     lbd = scalarMultiply(w, v)
