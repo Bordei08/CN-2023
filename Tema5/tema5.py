@@ -5,13 +5,13 @@ eps = 10 ** -9
 kmax = 100000
 
 
-def read_matrix(file_name):
-    a_file = open(file_name, "r")
-    dimension = int(a_file.readline())
+def read_matrix(fileName):
+    file = open(fileName, "r")
+    dimension = int(file.readline())
 
-    a = [[] for row in range(dimension)]
+    matrix = [[] for row in range(dimension)]
     while True:
-        line = a_file.readline()
+        line = file.readline()
 
         if not line:
             break
@@ -19,24 +19,24 @@ def read_matrix(file_name):
         line = line.strip()
 
         values = line.split(",")
-        values = list(map(lambda value: value.strip(), values))
+        values = [value.strip() for value in values]
 
         value = float(values[0])
         row = int(values[1])
         col = int(values[2])
 
         exists = False
-        for elem in a[row]:
+        for elem in matrix[row]:
             if elem[1] == col:
-                old_value = elem[0]
-                a[row].remove(elem)
-                a[row].append((old_value + value, col))
+                valueOld = elem[0]
+                matrix[row].remove(elem)
+                matrix[row].append((valueOld + value, col))
                 exists = True
         if not exists:
-            a[row].append((value, col))
+            matrix[row].append((value, col))
 
-    a_file.close()
-    return a, dimension
+    file.close()
+    return matrix, dimension
 
 
 # 1st point
@@ -62,9 +62,16 @@ def generateMatrix(n):
 
 def checkSym(a):
     n = len(a)
+
+    def sym(val, col, row):
+        for elem in a[col]:
+            if abs(val - elem[0]) <= eps and elem[1] == row:
+                return True
+        return False
+
     for row in range(n):
-        for (val, col) in a[row]:
-            if not next(filter(lambda elem: abs(val - elem[0]) <= eps and elem[1] == row, a[col]), None):
+        for val, col in a[row]:
+            if not sym(val, col, row):
                 return False
 
     return True
@@ -80,12 +87,12 @@ def matrixMultiplyVector(a, v):
     n = len(a)
     res = [0 for i in range(n)]
 
-    for index in range(n):
+    for i in range(n):
         s = 0
-        for elem in a[index]:
+        for elem in a[i]:
             col = elem[1]
             s += elem[0] * v[col]
-        res[index] = s
+        res[i] = s
 
     return res
 
@@ -98,7 +105,7 @@ def scalarMultiply(x, y):
 
 
 def euclidNorm(v):
-    return np.sqrt(sum(map(lambda x: x * x, v)))
+    return np.sqrt(sum([x * x for x in v]))
 
 
 def powerMethod(a):
@@ -116,8 +123,8 @@ def powerMethod(a):
     normToCheck = n * eps + 1
 
     while normToCheck > n * eps and k <= kmax:
-        w_normal = euclidNorm(w)
-        v = [w[i] / w_normal for i in range(n)]
+        wNormal = euclidNorm(w)
+        v = [w[i] / wNormal for i in range(n)]
 
         w = matrixMultiplyVector(a, v)
         lbd = scalarMultiply(w, v)
@@ -131,6 +138,7 @@ def powerMethod(a):
         raise ArithmeticError()
 
     return lbd, v
+
 
 ##################################################
 
@@ -170,6 +178,7 @@ if checkSym(a):
 else:
     print("matricea  nu e simetrica")
 
+
 # 3rd point
 
 # 1 valorile singulare ale matricei A
@@ -200,7 +209,6 @@ def rang(A):
 # 3 numarul de conditionare al matricei A
 # raportul dintre cea mai mare valoare singulara si cea mai mica valoare singulara strict pozitiva
 def nrCond(A):
-
     U, S, V = np.linalg.svd(A)
     singMax = 0
     singMin = 0
@@ -222,7 +230,6 @@ def nrCond(A):
 
 # 4 pseudoinversa Moore-Penrose a matricei A, Ai apartine R^(nxp), Ai = VSUt
 def pseudoInv(A):
-
     U, S, Vr = np.linalg.svd(A)
 
     singPositive = S[S > eps]
@@ -266,17 +273,18 @@ def pseudoInvMatix(A):
     print(norm)
     return Aj
 
+
 def main():
-    n = 4
-    p = 4
-    eps = 10 ** (-6)
+    n = 5
+    p = 5
     A = np.random.randint(20, size=(p, n))
     B = np.random.randint(20, size=p)
     singularValues(A)
     rang(A)
     nrCond(A)
     pseudoInv(A)
-    xiNorm(A,B)
+    xiNorm(A, B)
     pseudoInvMatix(A)
+
 
 main()
